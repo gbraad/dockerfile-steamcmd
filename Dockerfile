@@ -4,34 +4,36 @@ MAINTAINER Gerard Braad <me@gbraad.nl>
 RUN dnf update -y && \
     dnf clean all
 
-# /home/steam/.local/share/Steam/ ?
-ENV WORKSPACE=/home/steam \
-    UID=1000
+ENV HOME=/home/user \
+    USERNAME=user \
+    UID=1000 \
+    WORKSPACE=/home/user/Steam
 
 # Create user, make root folder and change ownership
-RUN mkdir -p ${WORKSPACE} && \
-    chown -R ${UID}:0 ${WORKSPACE} && \
-    adduser user -u ${UID} -g 0 -r -m -d ${WORKSPACE} -c "Default Application User" -l
+RUN mkdir -p ${HOME} && \
+    chown -R ${UID}:0 ${HOME} && \
+    adduser ${USERNAME} -u ${UID} -g 0 -r -m -d ${HOME} -c "Default Application User" -l
 
 # Dependencies
 RUN dnf install -y \
         glibc.i686 \
         libstdc++.i686 \
-        wget \
+        curl \
         tar && \
     dnf clean all
 
-WORKDIR ${WORKSPACE}
-USER 1000
-#VOLUME ${WORKSPACE}/.steam
+USER ${UID}
 
 # Install into user's workspace
-RUN mkdir -p ${WORKSPACE}/.steam && \
-    wget http://media.steampowered.com/installer/steamcmd_linux.tar.gz -P /tmp/ && \
-    tar -xvzf /tmp/steamcmd_linux.tar.gz -C ${WORKSPACE}/.steam && \
-    rm -f /tmp/steamcmd_linux.tar.gz
+RUN mkdir -p ${WORKSPACE} && \
+    cd ${WORKSPACE} && \
+    curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
+
+WORKDIR ${WORKSPACE}
+VOLUME ${WORKSPACE}
 
 # Allow update process to run for first-run
-RUN ${WORKSPACE}/.steam/steamcmd.sh +quit
+RUN ${WORKSPACE}/steamcmd.sh +quit
 
-CMD ${WORKSPACE}/.steam/steamcmd.sh
+CMD ${WORKSPACE}/steamcmd.sh
+

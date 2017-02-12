@@ -1,4 +1,14 @@
 Containerized Steam command
 ===========================
 
-**WIP**
+
+https://developer.valvesoftware.com/wiki/Steamcmd
+
+  * UID: 1000
+  * USERNAME: user
+  * Volumes:
+    * `/home/user/Steam` (workdir)
+  * CMD: `/home/user/Steam/steamcmd.sh`
+
+
+Gerard Braad  
