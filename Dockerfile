@@ -7,7 +7,8 @@ RUN dnf update -y && \
 ENV HOME=/home/user \
     USERNAME=user \
     UID=1000 \
-    WORKSPACE=/home/user/Steam
+    STEAMBIN=/home/user/.steam \
+    STEAMDATA=/home/user/Steam
 
 # Create user, make root folder and change ownership
 RUN mkdir -p ${HOME} && \
@@ -25,15 +26,15 @@ RUN dnf install -y \
 USER ${UID}
 
 # Install into user's workspace
-RUN mkdir -p ${WORKSPACE} && \
-    cd ${WORKSPACE} && \
+RUN mkdir -p ${STEAMDATA} && \
+    mkdir -p ${STEAMBIN} && \
+    cd ${STEAMBIN} && \
     curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
 
-WORKDIR ${WORKSPACE}
-VOLUME ${WORKSPACE}
+WORKDIR ${STEAMDATA}
+VOLUME ${STEAMDATA}
 
 # Allow update process to run for first-run
-RUN ${WORKSPACE}/steamcmd.sh +quit
+RUN ${STEAMBIN}/steamcmd.sh +quit
 
-CMD ${WORKSPACE}/steamcmd.sh
-
+CMD ${STEAMBIN}/steamcmd.sh

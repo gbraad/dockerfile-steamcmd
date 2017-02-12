@@ -8,7 +8,7 @@ https://developer.valvesoftware.com/wiki/Steamcmd
   * USERNAME: user
   * Volumes:
     * `/home/user/Steam` (workdir)
-  * CMD: `/home/user/Steam/steamcmd.sh`
+  * CMD: `/home/user/.steam/steamcmd.sh`
 
 
 Gerard Braad  
