@@ -1,0 +1,13 @@
+image: docker:git
+services:
+  - docker:dind
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+
+build_image:
+  script:
+    - docker build -t registry.gitlab.com/gbraad/steamcmd:latest .
+    - docker push registry.gitlab.com/gbraad/steamcmd:latest
+  only:
+    - master
